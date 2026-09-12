@@ -12,7 +12,7 @@ Exits non-zero if any assertion fails.
 ## What these are
 
 Browser integration tests, not unit tests. Each suite launches headless Chrome,
-loads `retirement_simulator.html` over `file://`, and asserts against the live
+loads `simulator.html` over `file://`, and asserts against the live
 page. Most suites first wait for the automatic first simulation; `startup` opens
 a copy with no configuration beside it, which never runs one.
 

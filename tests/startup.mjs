@@ -14,12 +14,12 @@ const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 const scratch = fs.mkdtempSync(path.join(os.tmpdir(), 'retsim-nocfg-'));
 const copy = path.join(scratch, 'simulator');
 fs.mkdirSync(copy);
-for (const file of ['retirement_simulator.html', 'simulator.css']) {
+for (const file of ['simulator.html', 'simulator.css']) {
 	fs.copyFileSync(path.join(ROOT, file), path.join(copy, file));
 }
 fs.cpSync(path.join(ROOT, 'js'), path.join(copy, 'js'), { recursive: true });
 process.on('exit', () => fs.rmSync(scratch, { recursive: true, force: true }));
-const url = pathToFileURL(path.join(copy, 'retirement_simulator.html')).href;
+const url = pathToFileURL(path.join(copy, 'simulator.html')).href;
 
 const suite = {
 	name: 'startup',
@@ -52,7 +52,7 @@ const suite = {
 		t.ok(english.bannerShown, 'the page shows the cannot-start banner');
 		t.ok(english.successRate === english.noValue, 'the headline figure is the placeholder', english.successRate);
 		t.ok(
-			english.status === 'could not load ../data/retirement_setup.js and ../data/retirement_plan.js · not running',
+			english.status === 'could not load ../data/setup.js and ../data/plan.js · not running',
 			'the status line names both files it could not load',
 			english.status,
 		);
@@ -61,7 +61,7 @@ const suite = {
 			"document.getElementById('language-toggle').click(); return document.getElementById('save-status').textContent;",
 		);
 		t.ok(
-			japanese === '../data/retirement_setup.jsと../data/retirement_plan.js を読み込めませんでした・停止しています',
+			japanese === '../data/setup.jsと../data/plan.js を読み込めませんでした・停止しています',
 			'and names them in Japanese, joined without an English "and"',
 			japanese,
 		);

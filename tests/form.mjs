@@ -180,7 +180,7 @@ const suite = {
 		t.ok(derived.startsWith('true'), 'the engine gets the amount for the chosen age', derived);
 		/* Against the loaded configuration: claim-age literals in the page would pass
 		   everything above and fail here, and editing a benefit figure in
-		   retirement_plan.js does not break the test. */
+		   plan.js does not break the test. */
 		const fromCfg = await js(`const d = documents.plan;
 			const ages = [...d.secondary.pensionOptions, ...d.primary.pensionOptions].map(o=>o.startAge);
 			const shown = [...document.querySelectorAll('select[data-claim] option')].map(o=>o.textContent);
@@ -644,10 +644,10 @@ const suite = {
 		t.ok(dc.setting, 'and the setting that has no field, which it used to leave changed');
 		t.ok(dc.relabelled, 'and the page is relabelled from the restored currencies');
 		t.ok(dc.clean, 'and nothing is left reading as unsaved', dc.said);
-		t.ok(/retirement_plan\.js/.test(dc.said),
+		t.ok(/plan\.js/.test(dc.said),
 			'with the status back to naming the file the page opened on', dc.said);
 		t.ok(dc.backToSave, 'a save moves the restore point, so a discard stops there', discard);
-		t.ok(/^showing retirement_plan_\d{4}-\d\d-\d\d\.js$/.test(dc.saidAfterSave),
+		t.ok(/^showing plan_\d{4}-\d\d-\d\d\.js$/.test(dc.saidAfterSave),
 			'and the status names the file it went back to, not the one the page opened on',
 			dc.saidAfterSave);
 		/* A sidebar unit cell carries the field id and reaches its unit through
@@ -1315,12 +1315,12 @@ const suite = {
 		for (let i = 0; i < 30 && !fs.readdirSync(dl).some((f) => f.endsWith('.js')); i++) await wait(100);
 		const written = fs.readdirSync(dl).filter((f) => f.endsWith('.js'));
 		t.ok(written.length === 1, 'Save writes one .js file', written.join(', '));
-		t.ok(/^retirement_plan_\d{4}-\d\d-\d\d\.js$/.test(written[0]), 'named and dated as a plan document', written[0]);
+		t.ok(/^plan_\d{4}-\d\d-\d\d\.js$/.test(written[0]), 'named and dated as a plan document', written[0]);
 		const saved = fs.readFileSync(path.join(dl, written[0]), 'utf8');
 		t.ok(saved.startsWith('/*') && saved.includes('window.RETIREMENT_PLAN ='),
 			'with a comment header a .json file could not carry', saved.split('\n')[0]);
 		/* The acid test: hand it back through the picker's own reader. */
-		const round = await js(`const read = readDocument('retirement_plan_x.js', ${JSON.stringify(saved)});
+		const round = await js(`const read = readDocument('plan_x.js', ${JSON.stringify(saved)});
 			const doc = read.doc;
 			if (read.kind !== 'plan') throw new Error('read back as ' + read.kind);
 			const leaves = Object.keys(flatten(doc));
@@ -1349,9 +1349,9 @@ const suite = {
 		/* A setup document, a bare .json object and the pre-split single document are
 		   all refused, never half-applied. */
 		const rejects = await js(`const out = {};
-			try { readDocument('retirement_setup.js', 'window.RETIREMENT_SETUP = {currencies:{}};'); out.setup = 'accepted'; }
+			try { readDocument('setup.js', 'window.RETIREMENT_SETUP = {currencies:{}};'); out.setup = 'accepted'; }
 			catch (e) { out.setup = 'refused'; }
-			try { readDocument('retirement_inputs_2026-01-01.json', '{"plan": {"currentAge": 57}}'); out.json = 'accepted'; }
+			try { readDocument('inputs_2026-01-01.json', '{"plan": {"currentAge": 57}}'); out.json = 'accepted'; }
 			catch (e) { out.json = 'refused'; }
 			try { readDocument('old.js', 'window.RETIREMENT_DEFAULTS = {plan:{currentAge: 58}};'); out.legacyJs = 'accepted'; }
 			catch (e) { out.legacyJs = 'refused'; }
@@ -1472,7 +1472,7 @@ const suite = {
 		/* Nothing loads the .example.js files, so they are checked through the page's
 		   own validator: swapped into the live documents, then put back. */
 		const exampleSrc = ['setup', 'plan'].map((d) =>
-			fs.readFileSync(path.join(REPO, 'retirement_' + d + '.example.js'), 'utf8'),
+			fs.readFileSync(path.join(REPO, d + '.example.js'), 'utf8'),
 		);
 		const example = await js(`const sandbox = {};
 			for (const src of ${JSON.stringify(exampleSrc)}) new Function('window', src)(sandbox);

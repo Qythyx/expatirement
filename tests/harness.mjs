@@ -8,7 +8,7 @@ import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
-export const PAGE_URL = pathToFileURL(path.join(HERE, '..', 'retirement_simulator.html')).href;
+export const PAGE_URL = pathToFileURL(path.join(HERE, '..', 'simulator.html')).href;
 
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 export { wait };

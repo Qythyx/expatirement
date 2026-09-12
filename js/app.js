@@ -155,15 +155,15 @@ function planDocument() {
 function downloadFile(name, text, mime) {
 	el('a', { href: URL.createObjectURL(new Blob([text], { type: mime })), download: name }).click();
 }
-/* Written as a script so that, renamed to retirement_plan.js, it loads through
+/* Written as a script so that, renamed to plan.js, it loads through
    <script src> — the only way a file:// page can read a sibling file. */
 function savePlan() {
 	const today = new Date().toISOString().slice(0, 10);
-	planSource = 'retirement_plan_' + today + '.js';
+	planSource = 'plan_' + today + '.js';
 	downloadFile(
 		planSource,
 		'/* A plan saved by ' + APP_NAME + ' on ' + today + '.\n' +
-			'   Rename to retirement_plan.js and put it beside retirement_setup.js to make\n' +
+			'   Rename to plan.js and put it beside setup.js to make\n' +
 			'   it the state the page opens in. */\n' +
 			'window.RETIREMENT_PLAN = ' + JSON.stringify(planDocument(), null, 2) + ';\n',
 		'text/javascript',
@@ -173,9 +173,9 @@ function savePlan() {
 function saveSetup() {
 	const today = new Date().toISOString().slice(0, 10);
 	downloadFile(
-		'retirement_setup_' + today + '.js',
+		'setup_' + today + '.js',
 		'/* Simulator setup saved on ' + today + '.\n' +
-			'   Rename to retirement_setup.js and put it beside retirement_plan.js to make\n' +
+			'   Rename to setup.js and put it beside plan.js to make\n' +
 			'   it the configuration the page reads. */\n' +
 			'window.RETIREMENT_SETUP = ' + JSON.stringify(documents.setup, null, 2) + ';\n',
 		'text/javascript',
@@ -515,10 +515,9 @@ document.getElementById('language-toggle').onclick = () => applyLanguage(languag
 /* configUrl is the resolved URL — where the browser actually looked, for the
    failure banner; configPath is the src as written, which is how the file is
    named everywhere else. */
-const configUrl = (which) =>
-	(document.querySelector('script[src$="retirement_' + which + '.js"]') || {}).src || '';
+const configUrl = (which) => (document.querySelector('script[src$="/' + which + '.js"]') || {}).src || '';
 const configPath = (which) =>
-	(document.querySelector('script[src$="retirement_' + which + '.js"]') || {}).getAttribute?.('src') || '';
+	(document.querySelector('script[src$="/' + which + '.js"]') || {}).getAttribute?.('src') || '';
 function configProblems() {
 	const empty = (d) => !Object.keys(documents[d]).length;
 	if (empty('setup') && empty('plan')) {

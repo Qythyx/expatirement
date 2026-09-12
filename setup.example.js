@@ -1,7 +1,7 @@
 /* How the simulator itself is set up — an example. Copy to
-   ../data/retirement_setup.js and edit.
+   ../data/setup.js and edit.
 
-   This is one of two documents. The other, retirement_plan.example.js, is the
+   This is one of two documents. The other, plan.example.js, is the
    plan: balances, ages, rates, pensions. The split is by how often a thing
    changes. Nothing in this file changes once you have decided it; everything in
    that one does, on cadences from monthly to statutory.

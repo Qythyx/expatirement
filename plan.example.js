@@ -1,6 +1,6 @@
-/* An example plan. Copy to ../data/retirement_plan.js and edit.
+/* An example plan. Copy to ../data/plan.js and edit.
 
-   This is one of two documents; retirement_setup.example.js configures the tool.
+   This is one of two documents; setup.example.js configures the tool.
    That one is set once. This one changes, on cadences from monthly (balances, the
    exchange rate, spending) through annual (a pension statement) to statutory (the
    compulsory-distribution rules, the capital-gains rate).

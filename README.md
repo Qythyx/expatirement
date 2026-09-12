@@ -61,28 +61,28 @@ figures never sit inside a git checkout:
 anywhere/
 ├── simulator/                  this repository
 └── data/                       yours, never committed
-    ├── retirement_setup.js
-    └── retirement_plan.js
+    ├── setup.js
+    └── plan.js
 ```
 
 ```sh
 git clone <repository-url> simulator
 mkdir data
-cp simulator/retirement_setup.example.js data/retirement_setup.js
-cp simulator/retirement_plan.example.js  data/retirement_plan.js
-open simulator/retirement_simulator.html     # or open it in any browser
+cp simulator/setup.example.js data/setup.js
+cp simulator/plan.example.js  data/plan.js
+open simulator/simulator.html     # or open it in any browser
 ```
 
 The two files do different jobs:
 
-- **`retirement_setup.js`** configures the tool: the two currencies and countries, and how the
+- **`setup.js`** configures the tool: the two currencies and countries, and how the
   analysis panels are drawn. You set it once.
-- **`retirement_plan.js`** is the plan: balances, ages, spending, rates, pension options and the
+- **`plan.js`** is the plan: balances, ages, spending, rates, pension options and the
   compulsory-distribution rules. It changes as your situation does.
 
 Every figure in the examples is invented. Replace them with your own, either by editing the files or
-in the page. **Save plan** downloads a `retirement_plan_<date>.js`; rename it to
-`retirement_plan.js` and put it in `data/` to make it the starting state. **Save setup** does the
+in the page. **Save plan** downloads a `plan_<date>.js`; rename it to
+`plan.js` and put it in `data/` to make it the starting state. **Save setup** does the
 same for the setup file. Both files are run as JavaScript — from `data/`, and a plan also when it is
 opened with **Load plan** — so load only files you have read.
 

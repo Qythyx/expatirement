@@ -41,7 +41,7 @@ const suite = {
 		t.ok(!banner.img && banner.text, 'banner lines are text, not markup', JSON.stringify(banner));
 
 		const markup = fs
-			.readFileSync(path.join(ROOT, 'retirement_simulator.html'), 'utf8')
+			.readFileSync(path.join(ROOT, 'simulator.html'), 'utf8')
 			.replace(/<!--[\s\S]*?-->/g, '')
 			.replace(/<title>[\s\S]*?<\/title>/, '')
 			.replace(/<(script|style)\b[\s\S]*?<\/\1>/g, '');

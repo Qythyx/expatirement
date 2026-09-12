@@ -547,20 +547,20 @@ const UI = {
 	},
 	configDidNotLoad: {
 		en: (where) =>
-			'Could not find or load the configuration — neither retirement_setup.js nor ' +
-			'retirement_plan.js reached the page. Looked in: ' + where + '\n' +
+			'Could not find or load the configuration — neither setup.js nor ' +
+			'plan.js reached the page. Looked in: ' + where + '\n' +
 			'If the files are sitting there, something between the page and them refused the ' +
 			'request — a preview server, or a sandboxed viewer. The browser console names it.',
 		ja: (where) =>
-			'設定を見つけられないか、読み込めませんでした。retirement_setup.js も retirement_plan.js も' +
+			'設定を見つけられないか、読み込めませんでした。setup.js も plan.js も' +
 			'ページに届いていません。探した場所: ' + where + '\n' +
 			'そこにファイルがあるなら、ページとファイルのあいだで要求が拒否されています。' +
 			'プレビュー用のサーバーや、サンドボックスの中で開いた場合などです。' +
 			'理由はブラウザのコンソールに出ます。',
 	},
 	configFileMissing: {
-		en: (which, url) => '  retirement_' + which + '.js — could not find or load: ' + url,
-		ja: (which, url) => '  retirement_' + which + '.js — 見つからないか、読み込めません: ' + url,
+		en: (which, url) => '  ' + which + '.js — could not find or load: ' + url,
+		ja: (which, url) => '  ' + which + '.js — 見つからないか、読み込めません: ' + url,
 	},
 	configIncomplete: {
 		en: 'The configuration is incomplete:',
