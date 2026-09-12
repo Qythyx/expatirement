@@ -1,0 +1,10 @@
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.Trashes
+
+# Agent scratch space. Git worktrees get checked out under .claude/worktrees,
+# so without this the repo would track a copy of itself.
+.claude/

@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>Expatirement — Retirement Simulator for Dual Currencies</title>
+	<!-- The only request the page makes to the network. Offline, every font stack
+	     falls through to the system's sans-serif and monospace, and the page still works. -->
+	<link rel="preconnect" href="https://fonts.googleapis.com" />
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+	<link
+		rel="stylesheet"
+		href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,700;1,400&family=Noto+Sans+JP:wght@400;700&family=Noto+Sans+Mono:wght@400;600&display=swap" />
+	<link rel="stylesheet" href="simulator.css" />
+</head>
+
+<body>
+	<!-- Text comes from UI through data-i18n, and the markup carries none of its own
+	     (the hygiene suite checks). <title> is the exception: the browser shows it
+	     before any script runs. -->
+	<header>
+		<div class="title-block">
+			<h1></h1>
+			<div class="tagline" data-i18n="tagline"></div>
+			<div class="note" data-i18n="sub" hidden></div>
+		</div>
+		<button id="open-settings" data-i18n="buttonSettings"></button>
+		<button id="language-toggle" lang="ja"></button>
+	</header>
+
+	<div class="banner" id="banner" hidden></div>
+
+	<div class="layout">
+		<aside id="sidebar"></aside>
+
+		<main>
+			<div class="toolbar">
+				<button id="save-plan" data-i18n="buttonSave"></button>
+				<button id="load-plan" data-i18n="buttonLoad"></button>
+				<button id="discard-changes" data-i18n="buttonReset"></button>
+				<input type="file" id="plan-file" accept=".js,text/javascript" style="display: none" />
+				<span class="note" id="save-status"></span>
+			</div>
+
+			<div class="panel">
+				<h2 class="caps"><span data-i18n="panelPath"></span></h2>
+				<div class="metrics" id="path-metrics"></div>
+				<canvas id="path-chart" height="330"></canvas>
+				<div class="legend" id="path-legend"></div>
+				<div class="note" data-i18n="notePath" hidden></div>
+			</div>
+
+			<div class="panel">
+				<h2 class="caps"><span data-i18n="panelMonteCarlo"></span></h2>
+				<div class="headline">
+					<div class="figure figure-large" id="success-rate"></div>
+					<div class="note" id="success-caption" data-i18n="successCaptionInitial"></div>
+				</div>
+				<div id="outcomes"></div>
+				<canvas id="survival-chart" height="220"></canvas>
+				<div class="legend" id="survival-legend"></div>
+				<div class="note" id="survival-note" hidden></div>
+			</div>
+
+			<div class="panel">
+				<h2 class="caps"><span data-i18n="panelSensitivity"></span></h2>
+				<div id="sensitivity-grid"></div>
+				<div class="note" id="sensitivity-note" hidden></div>
+			</div>
+
+			<div class="panel" id="notes-panel" hidden>
+				<h2 class="caps"><span data-i18n="panelNotes"></span></h2>
+				<div class="note" data-i18n="noteAssumptions"></div>
+			</div>
+		</main>
+	</div>
+
+	<dialog id="settings-sheet" tabindex="-1" aria-labelledby="settings-title">
+		<header>
+			<h2 id="settings-title" class="caps" data-i18n="panelSettings"></h2>
+			<button id="settings-save-plan" data-i18n="buttonSave"></button>
+			<button id="settings-save-setup" data-i18n="buttonSaveSetup"></button>
+			<button id="settings-close" data-i18n="buttonClose"></button>
+		</header>
+		<div id="settings-body"></div>
+	</dialog>
+
+	<!-- Classic scripts, not modules: Chrome will not load a module over file://. So
+	     they share one global scope, and each may use at parse time only what the files
+	     above it define. The configuration comes first, through <script src>, the only
+	     way a file:// page can read a sibling file. -->
+	<script src="../data/retirement_setup.js"></script>
+	<script src="../data/retirement_plan.js"></script>
+	<script src="js/dom.js"></script>
+	<script src="js/strings.js"></script>
+	<script src="js/config.js"></script>
+	<script src="js/fields.js"></script>
+	<script src="js/settings.js"></script>
+	<script src="js/engine.js"></script>
+	<script src="js/panels.js"></script>
+	<script src="js/app.js"></script>
+</body>
+
+</html>

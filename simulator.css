@@ -1,0 +1,805 @@
+:root {
+	--paper: #f6f1e7;
+	--surface: #ffffff;
+	--ink: #1c1813;
+	--muted: #736a5c;
+	--rule: #d9cfbd;
+	--accent: #0f5e57;
+	--success: #2f6b3a;
+	--warning: #916412;
+	--danger: #9c4221;
+
+	--hairline: 1px solid var(--rule);
+	--shadow: 3px 4px 0 color-mix(in srgb, var(--ink) 20%, transparent);
+	--transition: 0.12s;
+
+	/* 'Noto Sans JP' sits behind both faces to catch kana and kanji — the monospace
+	   figures end in 億 — while Latin, and so every digit, still comes from the face
+	   in front. */
+	--font-sans: 'Noto Sans', 'Noto Sans JP', sans-serif;
+	--font-mono: 'Noto Sans Mono', 'Noto Sans JP', monospace;
+	--size-title: 30px;
+	--size-body: 15px;
+	--size-small: 12px;
+	/* Canvas text. The charts read this, --font-mono and the palette colours by name
+	   (js/panels.js), so a renamed one silently stops reaching the canvas. */
+	--size-chart: 11px;
+	--tracking-caps: 0.13em;
+
+	--radius-control: 6px;
+	--radius-surface: 14px;
+	--space-xs: 3px;
+	--space-s: 5px;
+	--space-m: 10px;
+	--space-l: 14px;
+	--input-width: 14ch;
+	--input-width-wide: 30ch;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+	background: var(--paper);
+	color: var(--ink);
+	font-family: var(--font-sans);
+	line-height: 1.5;
+	font-size: var(--size-body);
+	background-image: radial-gradient(color-mix(in srgb, var(--ink) 3%, transparent) 1px, transparent 1px);
+	background-size: 4px 4px;
+}
+
+/* ---- text roles ---- */
+.caps {
+	font-size: var(--size-small);
+	letter-spacing: var(--tracking-caps);
+	text-transform: uppercase;
+	font-weight: 700;
+}
+
+/* No margin of its own: a note sits in a grid, in a flex row or in a flow of
+   paragraphs, and each of those wants a different one. */
+.note {
+	font-size: var(--size-small);
+	color: var(--muted);
+}
+
+.unit {
+	font-size: var(--size-small);
+	color: var(--muted);
+	font-family: var(--font-mono);
+}
+
+.figure {
+	font-family: var(--font-mono);
+}
+
+.figure-large {
+	font-size: var(--size-title);
+	line-height: 1;
+	font-weight: 600;
+}
+
+/* Sits inside a caps heading, so it undoes the caps. */
+.badge {
+	font-family: var(--font-mono);
+	font-weight: 400;
+	letter-spacing: 0;
+	text-transform: none;
+	margin-left: var(--space-m);
+}
+
+.success {
+	color: var(--success);
+}
+
+.warning {
+	color: var(--warning);
+}
+
+.danger {
+	color: var(--danger);
+}
+
+/* ---- controls ---- */
+input:not([type='file']),
+select,
+textarea {
+	font-family: var(--font-mono);
+	font-size: var(--size-small);
+	border: var(--hairline);
+	background: var(--surface);
+	padding: var(--space-s);
+	border-radius: var(--radius-control);
+	color: var(--ink);
+}
+
+:is(input, select, textarea):focus {
+	outline: none;
+	border-color: var(--accent);
+}
+
+/* After the focus rule, so the mark stays while the value is being typed over. */
+:is(input, select, textarea)[aria-invalid='true'] {
+	border-color: var(--danger);
+	background: color-mix(in srgb, var(--danger) 6%, var(--surface));
+}
+
+input:not([type='file']) {
+	width: var(--input-width);
+}
+
+textarea,
+input.wide {
+	width: var(--input-width-wide);
+}
+
+textarea {
+	resize: vertical;
+}
+
+input[inputmode='decimal'] {
+	text-align: right;
+}
+
+select:not([data-claim]) {
+	font-family: var(--font-sans);
+}
+
+/* ---- header ---- */
+body > header {
+	padding: var(--space-m) var(--space-m) var(--space-l);
+	border-bottom: 2px solid var(--ink);
+	display: flex;
+	align-items: flex-start;
+	gap: var(--space-l);
+}
+
+.title-block {
+	flex: 1 1 auto;
+}
+
+body > header button {
+	flex: 0 0 auto;
+	white-space: nowrap;
+	align-self: center;
+}
+
+body > header h1 {
+	font-size: var(--size-title);
+	margin: 0;
+	font-weight: 700;
+}
+
+.tagline,
+.title-block .note {
+	margin-top: var(--space-xs);
+}
+
+.tagline {
+	color: var(--muted);
+}
+
+.layout {
+	display: grid;
+	grid-template-columns: auto 1fr;
+	align-items: start;
+}
+
+/* sidebar */
+aside {
+	border-right: var(--hairline);
+	padding: var(--space-m) 0 var(--space-m);
+	position: sticky;
+	top: 0;
+	max-height: 100vh;
+	overflow: auto;
+}
+
+@media (max-width: 860px) {
+	.layout {
+		grid-template-columns: 1fr;
+	}
+
+	aside {
+		position: static;
+		max-height: none;
+		border-right: none;
+		border-bottom: var(--hairline);
+	}
+}
+
+/* One table for every field, so each column sizes to its widest cell. That is
+   also why its sections cannot fold: a <details> cannot wrap table rows. */
+table.fields {
+	border-collapse: collapse;
+	width: max-content;
+	max-width: 100%;
+}
+
+table.fields th[scope='rowgroup'] {
+	text-align: left;
+	padding: var(--space-l) var(--space-m) var(--space-m);
+	border-top: var(--hairline);
+}
+
+table.fields tr:first-child th[scope='rowgroup'] {
+	border-top: none;
+	padding-top: var(--space-xs);
+}
+
+/* An empty column slot: the control's contents go, the grid cell stays. */
+.not-applicable > * {
+	display: none;
+}
+
+#notes-entry {
+	display: flex;
+	align-items: center;
+	gap: var(--space-m);
+	margin-top: var(--space-l);
+	padding: var(--space-l) var(--space-m) var(--space-m);
+	border-top: var(--hairline);
+}
+
+table.fields th[scope='row'] {
+	font-size: var(--size-small);
+	font-weight: 400;
+	text-align: left;
+	padding: var(--space-xs) var(--space-m) var(--space-xs) var(--space-m);
+	white-space: nowrap;
+}
+
+/* Right-aligned: the column can be wider than the input, and the right edge is
+   the one the claim-age dropdowns align to. */
+table.fields td {
+	text-align: right;
+	padding: var(--space-xs) var(--space-m) var(--space-xs) 0;
+	white-space: nowrap;
+}
+
+/* The dropdown is far wider than a number box, so it takes the whole row; in the
+   value column it would widen the sidebar. The flex box is a div inside the td,
+   so the cell stays a table-cell, and it carries the left padding that cell lacks. */
+.claim-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--space-l);
+	padding-left: var(--space-m);
+}
+
+.claim-row label {
+	font-size: var(--size-small);
+	white-space: nowrap;
+}
+
+.fields label[data-tip] {
+	cursor: help;
+	text-decoration: underline dotted var(--rule);
+	text-underline-offset: 0.25em;
+	transition:
+		color var(--transition),
+		text-decoration-color var(--transition);
+}
+
+.fields label[data-tip]:hover {
+	color: var(--accent);
+	text-decoration-color: var(--accent);
+}
+
+/* ---- settings sheet ---- */
+/* Its own text colour, because the browser paints a dialog in the system's
+   CanvasText. Laid out as a column only while open, so the browser's rule for a
+   closed one still hides it; the column lets the body scroll under a fixed header. */
+#settings-sheet {
+	padding: 0;
+	border: 2px solid var(--ink);
+	border-radius: var(--radius-surface);
+	box-shadow: var(--shadow);
+	background: var(--paper);
+	color: var(--ink);
+	width: min(860px, calc(100vw - 2 * var(--space-m)));
+	max-height: 92vh;
+	outline: none;
+}
+
+#settings-sheet[open] {
+	display: flex;
+	flex-direction: column;
+}
+
+#settings-sheet::backdrop {
+	background: color-mix(in srgb, var(--ink) 45%, transparent);
+}
+
+#settings-sheet > header {
+	display: flex;
+	align-items: center;
+	gap: var(--space-m);
+	flex-wrap: wrap;
+	padding: var(--space-m);
+	border-bottom: 2px solid var(--ink);
+}
+
+#settings-sheet > header h2 {
+	margin: 0;
+	flex: 1 1 auto;
+}
+
+#settings-body {
+	overflow: auto;
+	padding: 0 var(--space-m) var(--space-m);
+}
+
+#settings-sheet details {
+	border: var(--hairline);
+	border-radius: var(--radius-control);
+	margin-top: var(--space-m);
+	padding: 0 var(--space-m) var(--space-xs);
+}
+
+#settings-sheet details[open] > summary {
+	border-bottom: var(--hairline);
+	margin-bottom: var(--space-m);
+}
+
+#settings-sheet summary {
+	cursor: pointer;
+	list-style: none;
+	display: flex;
+	align-items: center;
+	gap: var(--space-m);
+	padding: var(--space-m) 0;
+}
+
+#settings-sheet summary::-webkit-details-marker {
+	display: none;
+}
+
+#settings-sheet summary::before {
+	content: '+';
+	font-family: var(--font-mono);
+	font-weight: 400;
+	width: 1em;
+	color: var(--accent);
+}
+
+#settings-sheet details[open] > summary::before {
+	content: '−';
+}
+
+#settings-sheet summary:hover {
+	color: var(--accent);
+}
+
+#settings-sheet details > .note {
+	margin: 0 0 var(--space-l);
+}
+
+#settings-intro {
+	margin: var(--space-l) 0 0;
+}
+
+/* One grid for the whole section, so a column of boxes lines up down all of it.
+   `.setting-row` is display:contents: it groups a row's parts for
+   closest('.setting-row') but draws nothing, so a border, padding or background
+   on it is silently ignored. */
+.setting-grid {
+	display: grid;
+	grid-template-columns: 1fr auto;
+	gap: var(--space-xs) var(--space-l);
+	align-items: baseline;
+}
+
+.setting-grid.paired {
+	grid-template-columns: 1fr auto auto;
+}
+
+.setting-row {
+	display: contents;
+}
+
+.setting-row > label,
+.setting-row > .setting-control {
+	padding: var(--space-m) 0 0;
+}
+
+/* On the row's last line, which spans every column; on the label and boxes the
+   rule would draw as disjoint segments with the gutter between them. */
+.setting-row > :last-child {
+	padding-bottom: var(--space-l);
+	border-bottom: var(--hairline);
+}
+
+.setting-grid > .setting-row:last-child > :last-child {
+	border-bottom: none;
+}
+
+.setting-row > label {
+	font-weight: 700;
+}
+
+.column-heads {
+	display: contents;
+}
+
+.column-heads > span {
+	color: var(--muted);
+	text-align: center;
+}
+
+.setting-control {
+	display: flex;
+	align-items: center;
+	gap: var(--space-m);
+	justify-content: flex-end;
+}
+
+/* A textarea's baseline is its last line, so baseline alignment would line a
+   six-row box's bottom line up with the label. */
+.setting-control:has(textarea) {
+	align-self: start;
+}
+
+.setting-row > [data-src] {
+	font-family: var(--font-mono);
+}
+
+[data-src] a {
+	color: inherit;
+}
+
+.prompt {
+	border-top: var(--hairline);
+	padding: var(--space-m) 0 var(--space-l);
+}
+
+.prompt h3 {
+	font-size: var(--size-body);
+	font-weight: 700;
+	margin: 0 0 var(--space-xs);
+}
+
+.prompt p {
+	font-size: var(--size-small);
+	color: var(--muted);
+	margin: var(--space-l) 0 var(--space-m);
+}
+
+.prompt p b {
+	font-family: var(--font-mono);
+	font-weight: 600;
+}
+
+/* `>` keeps this off the status notes in the button rows. */
+.prompt > .note {
+	margin: 0 0 var(--space-m);
+}
+
+.prompt textarea {
+	width: 100%;
+}
+
+.prompt > div {
+	display: flex;
+	align-items: center;
+	gap: var(--space-m);
+	margin-top: var(--space-m);
+}
+
+.setting-row > .note {
+	grid-column: 1 / -1;
+	margin: 0;
+}
+
+#tooltip {
+	position: fixed;
+	z-index: 100;
+	max-width: 280px;
+	background: var(--ink);
+	color: var(--paper);
+	font-size: var(--size-small);
+	line-height: 1.45;
+	padding: var(--space-m) var(--space-l);
+	border-radius: var(--radius-surface);
+	box-shadow: var(--shadow);
+	pointer-events: none;
+	opacity: 0;
+	transition: opacity var(--transition);
+	visibility: hidden;
+}
+
+#tooltip.show {
+	opacity: 1;
+	visibility: visible;
+}
+
+/* main */
+main {
+	padding: var(--space-m) var(--space-m) calc(var(--space-m) * 2);
+}
+
+.toolbar {
+	display: flex;
+	gap: var(--space-m);
+	flex-wrap: wrap;
+	align-items: center;
+	margin-bottom: var(--space-l);
+}
+
+/* `line-height: normal`, because `font: inherit` would bring in the page's 1.5 and
+   make every button taller. The hover fill skips .link and .icon, which keep their
+   own colour: filled, their text would sit on its own colour. */
+button {
+	font: inherit;
+	line-height: normal;
+	color: var(--ink);
+	background: transparent;
+	border: 1px solid var(--ink);
+	border-radius: var(--radius-control);
+	padding: var(--space-m) var(--space-l);
+	cursor: pointer;
+}
+
+button:not(.link, .icon):hover {
+	background: var(--accent);
+	border-color: var(--accent);
+	color: var(--paper);
+}
+
+button.link,
+button.icon {
+	background: none;
+	color: inherit;
+}
+
+/* Inline in a line of prose, so it takes that line's height; the control
+   line-height above would grow every source line it sits in. */
+button.link {
+	border: none;
+	padding: 0;
+	line-height: inherit;
+	text-decoration: underline;
+}
+
+/* Size, weight and tracking of its own: it sits in a caps heading or the page
+   title, and a tracked bold ⓘ at the title's size is a 45px circle with the glyph
+   off-centre. */
+button.icon {
+	font-family: var(--font-mono);
+	font-size: var(--size-small);
+	font-weight: 400;
+	letter-spacing: 0;
+	border: var(--hairline);
+	border-radius: 50%;
+	width: 1.5em;
+	height: 1.5em;
+	padding: 0;
+	line-height: 1;
+	color: var(--muted);
+}
+
+button.link:hover,
+button.icon:hover,
+button.icon[aria-expanded='true'] {
+	color: var(--accent);
+	border-color: var(--accent);
+}
+
+/* Sans, not the outcome table's monospace. The hover rule above outranks this, and
+   the pressed rule below must stay after it. */
+button.segment {
+	width: 100%;
+	font-family: var(--font-sans);
+	font-size: var(--size-small);
+	padding: var(--space-s) var(--space-m);
+	color: var(--muted);
+	border-color: var(--rule);
+}
+
+button[aria-pressed='true'] {
+	background: var(--ink);
+	border-color: var(--ink);
+	color: var(--paper);
+}
+
+/* The browser's own [hidden] rule is a plain `display: none`, which any class that
+   sets display beats, leaving the element on screen. The page hides with `hidden`
+   throughout, so this wins once instead of per class. */
+[hidden] {
+	display: none !important;
+}
+
+.panel {
+	background: var(--paper);
+	border: var(--hairline);
+	border-radius: var(--radius-surface);
+	padding: var(--space-m);
+	margin-bottom: var(--space-m);
+}
+
+.panel h2 {
+	margin: 0 0 var(--space-l);
+	padding-bottom: var(--space-m);
+	border-bottom: var(--hairline);
+}
+
+.metrics {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+	gap: var(--space-l) var(--space-m);
+}
+
+.metric .caps {
+	color: var(--muted);
+}
+
+.metric .figure {
+	margin-top: var(--space-xs);
+}
+
+#path-chart {
+	cursor: crosshair;
+}
+
+canvas {
+	width: 100%;
+	display: block;
+}
+
+.panel canvas {
+	margin-top: var(--space-l);
+}
+
+.headline {
+	display: flex;
+	align-items: flex-start;
+	gap: var(--space-l);
+	flex-wrap: wrap;
+}
+
+[aria-busy='true'] {
+	opacity: 0.4;
+}
+
+.headline .note {
+	/* A small basis: auto is the full paragraph width, which overflows the row and
+	   drops the note below the number. */
+	flex: 1 1 24ch;
+}
+
+.legend {
+	display: flex;
+	gap: var(--space-l);
+	flex-wrap: wrap;
+	align-items: baseline;
+	font-size: var(--size-small);
+	color: var(--muted);
+	margin: var(--space-m) 0 var(--space-xs);
+}
+
+.legend-group {
+	display: flex;
+	gap: var(--space-l);
+	flex-wrap: wrap;
+}
+
+.legend-group.end {
+	margin-left: auto;
+}
+
+.legend i {
+	display: inline-block;
+	width: 1.2em;
+	height: 0.8em;
+	margin-right: var(--space-s);
+	vertical-align: middle;
+	border-radius: var(--radius-surface);
+}
+
+table.grid {
+	border-collapse: collapse;
+	font-family: var(--font-mono);
+	font-size: var(--size-small);
+	margin-top: var(--space-m);
+}
+
+table.grid th,
+table.grid td {
+	border: var(--hairline);
+	padding: var(--space-m);
+	text-align: center;
+}
+
+table.grid th {
+	background: color-mix(in srgb, var(--accent) 10%, transparent);
+	font-weight: 700;
+	letter-spacing: var(--tracking-caps);
+}
+
+table.grid td.as-configured,
+table.grid th.as-configured {
+	outline: 2px solid var(--ink);
+	outline-offset: -2px;
+}
+
+.panel > .note,
+#sensitivity-grid > .note {
+	margin-top: var(--space-m);
+}
+
+.panel h2,
+.title-block h1 {
+	display: flex;
+	align-items: center;
+	gap: var(--space-m);
+}
+
+table.outcomes td:first-child {
+	padding-left: 0;
+	padding-right: var(--space-l);
+	text-align: left;
+	cursor: auto;
+}
+
+table.outcomes {
+	border-collapse: collapse;
+	margin-top: var(--space-l);
+	font-size: var(--size-small);
+}
+
+table.outcomes th,
+table.outcomes td {
+	padding: var(--space-s) var(--space-l);
+	text-align: right;
+	font-weight: 400;
+	white-space: nowrap;
+}
+
+table.outcomes thead th {
+	color: var(--muted);
+	border-bottom: var(--hairline);
+}
+
+table.outcomes tbody th {
+	text-align: left;
+	padding-left: 0;
+	color: var(--muted);
+}
+
+table.outcomes td {
+	font-family: var(--font-mono);
+	cursor: help;
+}
+
+#save-status {
+	margin-left: auto;
+}
+
+.banner {
+	--tone: var(--danger);
+	margin: 0 0 var(--space-l);
+	padding: var(--space-l);
+	border: 2px solid var(--tone);
+	background: color-mix(in srgb, var(--tone) 6%, var(--surface));
+	color: var(--tone);
+	font: var(--size-small) / 1.6 var(--font-mono);
+	white-space: pre-wrap;
+}
+
+.banner b {
+	display: block;
+	margin-bottom: var(--space-s);
+	font-size: var(--size-body);
+}
+
+.banner.warning {
+	--tone: var(--warning);
+}
+
+.banner.success {
+	--tone: var(--success);
+}
